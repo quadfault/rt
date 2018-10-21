@@ -51,15 +51,11 @@ impl Metal {
 
         Self { albedo, fuzz }
     }
-
-    fn reflect(&self, v: Vector, n: Vector) -> Vector {
-        v - n * (2.0 * v.dot(n))
-    }
 }
 
 impl Material for Metal {
     fn scatter(&self, r: &Ray, hr: &HitResult) -> Option<ScatterResult> {
-        let reflected = self.reflect(r.d.as_unit(), hr.n);
+        let reflected = reflect(r.d.as_unit(), hr.n);
         let scattered = Ray::new(
             hr.p,
             reflected + random_in_unit_sphere() * self.fuzz,
@@ -72,6 +68,59 @@ impl Material for Metal {
             })
         } else {
             None
+        }
+    }
+}
+
+pub struct Dielectric {
+    refractive_index: f32,
+}
+
+impl Dielectric {
+    pub fn new(refractive_index: f32) -> Self {
+        Self { refractive_index }
+    }
+}
+
+impl Material for Dielectric {
+    fn scatter(&self, r: &Ray, hr: &HitResult) -> Option<ScatterResult> {
+        let reflected = reflect(r.d, hr.n);
+        let outward_normal;
+        let ni_over_nt;
+        let cosine;
+
+        if r.d.dot(hr.n) > 0.0 {
+            outward_normal = -hr.n;
+            ni_over_nt = self.refractive_index;
+            cosine = self.refractive_index * r.d.dot(hr.n) / r.d.norm();
+        } else {
+            outward_normal = hr.n;
+            ni_over_nt = 1.0 / self.refractive_index;
+            cosine = -r.d.dot(hr.n) / r.d.norm();
+        }
+
+        let reflect_prob;
+        let mut refracted = Vector::zero();
+        match refract(r.d, outward_normal, ni_over_nt) {
+            Some(r) => {
+                refracted = r;
+                reflect_prob = schlick(cosine, self.refractive_index);
+            }
+            None => {
+                reflect_prob = 1.0;
+            }
+        }
+
+        if thread_rng().gen::<f32>() < reflect_prob {
+            Some(ScatterResult {
+                scattered: Ray::new(hr.p, reflected),
+                attenuation: Vector::new(1.0, 1.0, 1.0),
+            })
+        } else {
+            Some(ScatterResult {
+                scattered: Ray::new(hr.p, refracted),
+                attenuation: Vector::new(1.0, 1.0, 1.0),
+            })
         }
     }
 }
@@ -93,4 +142,26 @@ fn random_in_unit_sphere() -> Vector {
     }
 
     p
+}
+
+fn reflect(v: Vector, n: Vector) -> Vector {
+    v - n * (2.0 * v.dot(n))
+}
+
+fn refract(v: Vector, n: Vector, ni_over_nt: f32) -> Option<Vector> {
+    let uv = v.as_unit();
+    let dt = uv.dot(n);
+    let discriminant = 1.0 - ni_over_nt * ni_over_nt * (1.0 - dt * dt);
+    if discriminant > 0.0 {
+        Some((uv - n * dt) * ni_over_nt - n * discriminant.sqrt())
+    } else {
+        None
+    }
+}
+
+fn schlick(cosine: f32, refractive_index: f32) -> f32 {
+    let r0 = (1.0 - refractive_index) / (1.0 + refractive_index);
+    let r0 = r0 * r0;
+
+    r0 + (1.0 - r0) * (1.0 - cosine).powi(5)
 }

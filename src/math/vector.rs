@@ -2,7 +2,7 @@
 // Written by quadfault
 // 10/18/18
 
-use std::ops::{ Add, Div, Mul, Sub };
+use std::ops::{ Add, Div, Mul, Neg, Sub };
 
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub struct Vector {
@@ -14,6 +14,10 @@ pub struct Vector {
 impl Vector {
     pub fn new(x: f32, y: f32, z: f32) -> Self {
         Self { x, y, z }
+    }
+
+    pub fn zero() -> Self {
+        Self::new(0.0, 0.0, 0.0)
     }
 
     pub fn norm(&self) -> f32 {
@@ -67,6 +71,18 @@ impl Mul<f32> for Vector {
             rhs * self.x,
             rhs * self.y,
             rhs * self.z,
+        )
+    }
+}
+
+impl Neg for Vector {
+    type Output = Self;
+
+    fn neg(self) -> Self::Output {
+        Self::Output::new(
+            -self.x,
+            -self.y,
+            -self.z,
         )
     }
 }

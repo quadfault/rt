@@ -24,8 +24,6 @@ pub struct Sphere {
 
 impl Sphere {
     pub fn new(c: Point, r: f32, material: Box<dyn Material>) -> Self {
-        assert!(r > 0.0);
-
         Self { c, r, material }
     }
 }

@@ -29,7 +29,7 @@ fn main() {
     scene.add(Box::new(Sphere::new(
         Point::new(0.0, 0.0, -1.0),
         0.5,
-        Box::new(Lambertian::new(Vector::new(0.8, 0.3, 0.3)))
+        Box::new(Lambertian::new(Vector::new(0.1, 0.2, 0.5)))
     )));
     scene.add(Box::new(Sphere::new(
         Point::new(0.0, -100.5, -1.0),
@@ -44,7 +44,12 @@ fn main() {
     scene.add(Box::new(Sphere::new(
         Point::new(-1.0, 0.0, -1.0),
         0.5,
-        Box::new(Metal::new(Vector::new(0.8, 0.8, 0.8), 1.0))
+        Box::new(Dielectric::new(1.5))
+    )));
+    scene.add(Box::new(Sphere::new(
+        Point::new(-1.0, 0.0, -1.0),
+        -0.45,
+        Box::new(Dielectric::new(1.5)),
     )));
 
     let camera = Camera::new();
