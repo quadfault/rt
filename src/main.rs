@@ -19,7 +19,7 @@ use self::scene::Scene;
 fn main() {
     let nx = 1000;
     let ny = 500;
-    let ns = 100;
+    let ns = 1000;
 
     println!("P3");
     println!("{} {}", nx, ny);
