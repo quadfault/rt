@@ -52,12 +52,16 @@ fn main() {
         Box::new(Dielectric::new(1.5)),
     )));
 
+    let lookfrom = Point::new(3.0, 3.0, 2.0);
+    let lookat = Point::new(0.0, 0.0, -1.0);
     let camera = Camera::new(
-        Point::new(-2.0, 2.0, 1.0),
-        Point::new(0.0, 0.0, -1.0),
+        lookfrom,
+        lookat,
         Vector::new(0.0, 1.0, 0.0),
-        90.0,
+        20.0,
         nx as f32 / ny as f32,
+        2.0,
+        (lookfrom - lookat).norm(),
     );
 
     let mut rng = thread_rng();
