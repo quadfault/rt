@@ -55,7 +55,7 @@ impl Metal {
 
 impl Material for Metal {
     fn scatter(&self, r: &Ray, hr: &HitResult) -> Option<ScatterResult> {
-        let reflected = reflect(r.d.as_unit(), hr.n);
+        let reflected = reflect(r.d.hat(), hr.n);
         let scattered = Ray::new(
             hr.p,
             reflected + random_in_unit_sphere() * self.fuzz,
@@ -149,7 +149,7 @@ fn reflect(v: Vector, n: Vector) -> Vector {
 }
 
 fn refract(v: Vector, n: Vector, ni_over_nt: f32) -> Option<Vector> {
-    let uv = v.as_unit();
+    let uv = v.hat();
     let dt = uv.dot(n);
     let discriminant = 1.0 - ni_over_nt * ni_over_nt * (1.0 - dt * dt);
     if discriminant > 0.0 {

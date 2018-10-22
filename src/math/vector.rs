@@ -28,7 +28,7 @@ impl Vector {
         self.x * self.x + self.y * self.y + self.z * self.z
     }
 
-    pub fn as_unit(&self) -> Self {
+    pub fn hat(&self) -> Self {
         let n = self.norm();
 
         Self::new(self.x / n, self.y / n, self.z / n)

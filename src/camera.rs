@@ -32,8 +32,8 @@ impl Camera {
         let half_width = aspect * half_height;
 
         let origin = lookfrom;
-        let w = (lookfrom - lookat).as_unit();
-        let u = vup.cross(w).as_unit();
+        let w = (lookfrom - lookat).hat();
+        let u = vup.cross(w).hat();
         let v = w.cross(u);
 
         Self {

@@ -103,7 +103,7 @@ fn color(r: Ray, scene: &mut Scene, depth: i32, rng: &mut ThreadRng) -> Color {
             }
         }
         None => {
-            let unit_direction = r.d.as_unit();
+            let unit_direction = r.d.hat();
             let t = 0.5 * (unit_direction.y + 1.0);
 
             Color::blend(
