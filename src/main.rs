@@ -25,34 +25,26 @@ fn main() {
     println!("{} {}", nx, ny);
     println!("255");
 
+    let r = std::f32::consts::FRAC_PI_4.cos();
     let mut scene = Scene::new();
     scene.add(Box::new(Sphere::new(
-        Point::new(0.0, 0.0, -1.0),
-        0.5,
-        Box::new(Lambertian::new(Vector::new(0.1, 0.2, 0.5)))
+        Point::new(-r, 0.0, -1.0),
+        r,
+        Box::new(Lambertian::new(Vector::new(0.0, 0.0, 1.0))),
     )));
     scene.add(Box::new(Sphere::new(
-        Point::new(0.0, -100.5, -1.0),
-        100.0,
-        Box::new(Lambertian::new(Vector::new(0.8, 0.8, 0.0)))
-    )));
-    scene.add(Box::new(Sphere::new(
-        Point::new(1.0, 0.0, -1.0),
-        0.5,
-        Box::new(Metal::new(Vector::new(0.8, 0.6, 0.2), 0.3))
-    )));
-    scene.add(Box::new(Sphere::new(
-        Point::new(-1.0, 0.0, -1.0),
-        0.5,
-        Box::new(Dielectric::new(1.5))
-    )));
-    scene.add(Box::new(Sphere::new(
-        Point::new(-1.0, 0.0, -1.0),
-        -0.45,
-        Box::new(Dielectric::new(1.5)),
+        Point::new(r, 0.0, -1.0),
+        r,
+        Box::new(Lambertian::new(Vector::new(1.0, 0.0, 0.0))),
     )));
 
-    let camera = Camera::new();
+    let camera = Camera::new(
+        Point::new(-2.0, -2.0, 1.0),
+        Point::new(0.0, 0.0, -1.0),
+        Vector::new(0.0, 1.0, 0.0),
+        90.0,
+        nx as f32 / ny as f32,
+    );
 
     let mut rng = thread_rng();
 

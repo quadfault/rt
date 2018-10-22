@@ -12,12 +12,27 @@ pub struct Camera {
 }
 
 impl Camera {
-    pub fn new() -> Self {
+    pub fn new(lookfrom: Point,
+               lookat: Point,
+               vup: Vector,
+               vfov: f32,
+               aspect: f32)
+        -> Self
+    {
+        let theta = vfov.to_radians();
+        let half_height = (theta / 2.0).tan();
+        let half_width = aspect * half_height;
+
+        let origin = lookfrom;
+        let w = (lookfrom - lookat).as_unit();
+        let u = vup.cross(w).as_unit();
+        let v = w.cross(u);
+
         Self {
-            origin: Point::new(0.0, 0.0, 2.0),
-            lower_left_corner: Point::new(-2.0, -1.0, -1.0),
-            horizontal: Vector::new(4.0, 0.0, 0.0),
-            vertical: Vector::new(0.0, 2.0, 0.0),
+            origin,
+            lower_left_corner: origin - u * half_width - v * half_height - w,
+            horizontal: u * (2.0 * half_width),
+            vertical: v * (2.0 * half_height),
         }
     }
 
