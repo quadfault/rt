@@ -7,7 +7,7 @@ mod point;
 mod ray;
 mod vector;
 
-pub use self::color::Color;
-pub use self::point::Point;
-pub use self::ray::Ray;
-pub use self::vector::Vector;
+pub use self::color::*;
+pub use self::point::*;
+pub use self::ray::*;
+pub use self::vector::*;
