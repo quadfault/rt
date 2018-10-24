@@ -17,8 +17,8 @@ use self::models::*;
 use self::scene::Scene;
 
 fn main() {
-    let nx = 1000;
-    let ny = 500;
+    let nx = 1366;
+    let ny = 768;
     let ns = 1000;
 
     println!("P3");
