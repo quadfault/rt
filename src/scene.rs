@@ -20,7 +20,7 @@ impl Scene {
 }
 
 impl Hittable for Scene {
-    fn hit(&self, r: &Ray, tmin: f32, tmax: f32) -> Option<HitResult> {
+    fn hit(&self, r: &Ray, tmin: f64, tmax: f64) -> Option<HitResult> {
         let mut closest_so_far = tmax;
         let mut rc = None;
 

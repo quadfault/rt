@@ -14,7 +14,7 @@ impl Ray {
         Self { o, d }
     }
 
-    pub fn at(&self, t: f32) -> Point {
+    pub fn at(&self, t: f64) -> Point {
         self.o + self.d * t
     }
 }

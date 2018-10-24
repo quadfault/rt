@@ -59,9 +59,9 @@ impl Mul<Vector> for Color {
 
     fn mul(self, rhs: Vector) -> Self::Output {
         Self::new(
-            self.r * rhs.x,
-            self.g * rhs.y,
-            self.b * rhs.z,
+            self.r * rhs.x as f32,
+            self.g * rhs.y as f32,
+            self.b * rhs.z as f32,
         )
     }
 }

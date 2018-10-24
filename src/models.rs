@@ -6,30 +6,30 @@ use crate::materials::Material;
 use crate::math::{ Point, Ray, Vector };
 
 pub struct HitResult<'a> {
-    pub t: f32,
+    pub t: f64,
     pub p: Point,
     pub n: Vector,
     pub material: &'a dyn Material,
 }
 
 pub trait Hittable {
-    fn hit(&self, r: &Ray, tmin: f32, tmax: f32) -> Option<HitResult>;
+    fn hit(&self, r: &Ray, tmin: f64, tmax: f64) -> Option<HitResult>;
 }
 
 pub struct Sphere {
     c: Point,
-    r: f32,
+    r: f64,
     material: Box<dyn Material>,
 }
 
 impl Sphere {
-    pub fn new(c: Point, r: f32, material: Box<dyn Material>) -> Self {
+    pub fn new(c: Point, r: f64, material: Box<dyn Material>) -> Self {
         Self { c, r, material }
     }
 }
 
 impl Hittable for Sphere {
-    fn hit(&self, r: &Ray, tmin: f32, tmax: f32) -> Option<HitResult> {
+    fn hit(&self, r: &Ray, tmin: f64, tmax: f64) -> Option<HitResult> {
         let oc = r.o - self.c;
         let a = r.d.dot(r.d);
         let b = oc.dot(r.d);

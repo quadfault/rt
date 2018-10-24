@@ -59,7 +59,7 @@ fn main() {
         lookat,
         Vector::new(0.0, 1.0, 0.0),
         20.0,
-        nx as f32 / ny as f32,
+        nx as f64 / ny as f64,
         2.0,
         (lookfrom - lookat).norm(),
     );
@@ -70,8 +70,8 @@ fn main() {
         for i in 0..nx {
             let mut c = Color::new(0.0, 0.0, 0.0);
             for _ in 0..ns {
-                let u = (i as f32 + rng.gen::<f32>()) / nx as f32;
-                let v = (j as f32 + rng.gen::<f32>()) / ny as f32;
+                let u = (i as f64 + rng.gen::<f64>()) / nx as f64;
+                let v = (j as f64 + rng.gen::<f64>()) / ny as f64;
 
                 let r = camera.get_ray(u, v);
 
@@ -90,7 +90,7 @@ fn main() {
 }
 
 fn color(r: Ray, scene: &mut Scene, depth: i32, rng: &mut ThreadRng) -> Color {
-    match scene.hit(&r, 0.001, std::f32::MAX) {
+    match scene.hit(&r, 0.001, std::f64::MAX) {
         Some(hr) => {
             if depth < 50 {
                 match hr.material.scatter(&r, &hr) {
@@ -104,7 +104,7 @@ fn color(r: Ray, scene: &mut Scene, depth: i32, rng: &mut ThreadRng) -> Color {
         }
         None => {
             let unit_direction = r.d.hat();
-            let t = 0.5 * (unit_direction.y + 1.0);
+            let t = 0.5 * (unit_direction.y as f32 + 1.0);
 
             Color::blend(
                 t,

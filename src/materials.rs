@@ -40,11 +40,11 @@ impl Material for Lambertian {
 
 pub struct Metal {
     albedo: Vector,
-    fuzz: f32,
+    fuzz: f64,
 }
 
 impl Metal {
-    pub fn new(albedo: Vector, mut fuzz: f32) -> Self {
+    pub fn new(albedo: Vector, mut fuzz: f64) -> Self {
         if fuzz > 1.0 {
             fuzz = 1.0;
         }
@@ -73,11 +73,11 @@ impl Material for Metal {
 }
 
 pub struct Dielectric {
-    refractive_index: f32,
+    refractive_index: f64,
 }
 
 impl Dielectric {
-    pub fn new(refractive_index: f32) -> Self {
+    pub fn new(refractive_index: f64) -> Self {
         Self { refractive_index }
     }
 }
@@ -111,7 +111,7 @@ impl Material for Dielectric {
             }
         }
 
-        if thread_rng().gen::<f32>() < reflect_prob {
+        if thread_rng().gen::<f64>() < reflect_prob {
             Some(ScatterResult {
                 scattered: Ray::new(hr.p, reflected),
                 attenuation: Vector::new(1.0, 1.0, 1.0),
@@ -148,7 +148,7 @@ fn reflect(v: Vector, n: Vector) -> Vector {
     v - n * (2.0 * v.dot(n))
 }
 
-fn refract(v: Vector, n: Vector, ni_over_nt: f32) -> Option<Vector> {
+fn refract(v: Vector, n: Vector, ni_over_nt: f64) -> Option<Vector> {
     let uv = v.hat();
     let dt = uv.dot(n);
     let discriminant = 1.0 - ni_over_nt * ni_over_nt * (1.0 - dt * dt);
@@ -159,7 +159,7 @@ fn refract(v: Vector, n: Vector, ni_over_nt: f32) -> Option<Vector> {
     }
 }
 
-fn schlick(cosine: f32, refractive_index: f32) -> f32 {
+fn schlick(cosine: f64, refractive_index: f64) -> f64 {
     let r0 = (1.0 - refractive_index) / (1.0 + refractive_index);
     let r0 = r0 * r0;
 

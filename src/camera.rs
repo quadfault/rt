@@ -14,17 +14,17 @@ pub struct Camera {
     u: Vector,
     v: Vector,
     w: Vector,
-    lens_radius: f32,
+    lens_radius: f64,
 }
 
 impl Camera {
     pub fn new(lookfrom: Point,
                lookat: Point,
                vup: Vector,
-               vfov: f32,
-               aspect: f32,
-               aperture: f32,
-               focus_dist: f32)
+               vfov: f64,
+               aspect: f64,
+               aperture: f64,
+               focus_dist: f64)
         -> Self
     {
         let theta = vfov.to_radians();
@@ -49,7 +49,7 @@ impl Camera {
         }
     }
 
-    pub fn get_ray(&self, s: f32, t: f32) -> Ray {
+    pub fn get_ray(&self, s: f64, t: f64) -> Ray {
         let rd = random_in_unit_disk() * self.lens_radius;
         let offset = self.u * rd.x + self.v * rd.y;
 
