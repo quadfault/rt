@@ -12,7 +12,7 @@ pub struct HitResult<'a> {
     pub material: &'a dyn Material,
 }
 
-pub trait Hittable {
+pub trait Model {
     fn hit(&self, r: &Ray, tmin: f64, tmax: f64) -> Option<HitResult>;
 }
 
@@ -28,7 +28,7 @@ impl Sphere {
     }
 }
 
-impl Hittable for Sphere {
+impl Model for Sphere {
     fn hit(&self, r: &Ray, tmin: f64, tmax: f64) -> Option<HitResult> {
         let oc = r.o - self.c;
         let a = r.d.dot(r.d);

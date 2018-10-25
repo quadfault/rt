@@ -6,7 +6,7 @@ use crate::models::*;
 use crate::math::Ray;
 
 pub struct Scene {
-    models: Vec<Box<dyn Hittable>>,
+    models: Vec<Box<dyn Model>>,
 }
 
 impl Scene {
@@ -14,12 +14,12 @@ impl Scene {
         Self { models: vec![] }
     }
 
-    pub fn add(&mut self, model: Box<dyn Hittable>) {
+    pub fn add(&mut self, model: Box<dyn Model>) {
         self.models.push(model);
     }
 }
 
-impl Hittable for Scene {
+impl Model for Scene {
     fn hit(&self, r: &Ray, tmin: f64, tmax: f64) -> Option<HitResult> {
         let mut closest_so_far = tmax;
         let mut rc = None;
