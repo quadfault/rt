@@ -4,6 +4,8 @@
 
 use crate::math::{ Point, Ray, Vector };
 
+use super::Camera;
+
 pub struct PinholeCamera {
     origin: Point,
     lower_left_corner: Point,
@@ -20,8 +22,10 @@ impl PinholeCamera {
             vertical: Vector::new(0.0, 2.0, 0.0),
         }
     }
+}
 
-    pub fn get_ray(&self, u: f64, v: f64) -> Ray {
+impl Camera for PinholeCamera {
+    fn get_ray(&self, u: f64, v: f64) -> Ray {
         Ray::new(
             self.origin,
             self.lower_left_corner

@@ -8,53 +8,23 @@ mod math;
 mod models;
 mod scene;
 
-use rand::prelude::*;
-
 use self::cameras::PinholeCamera;
-use self::math::{ Color, Point, Ray, Vector };
+use self::math::{ Point, Vector };
 use self::materials::*;
 use self::models::*;
 use self::scene::Scene;
 
 fn main() {
-    let nx = 1000;
-    let ny = 500;
-    let ns = 100;
-
-    println!("P3");
-    println!("{} {}", nx, ny);
-    println!("255");
-
-    let mut scene = build_scene();
-    let camera = PinholeCamera::new();
-
-    let mut rng = thread_rng();
-
-    for j in (0..ny).rev() {
-        for i in 0..nx {
-            let mut c = Color::new(0.0, 0.0, 0.0);
-            for _ in 0..ns {
-                let u = (i as f64 + rng.gen::<f64>()) / nx as f64;
-                let v = (j as f64 + rng.gen::<f64>()) / ny as f64;
-
-                let r = camera.get_ray(u, v);
-
-                c += color(r, &mut scene, 0, &mut rng);
-            }
-            c /= ns as f32;
-            c = Color::new(c.r.sqrt(), c.g.sqrt(), c.b.sqrt());
-
-            let ir = (255.99 * c.r) as i32;
-            let ig = (255.99 * c.g) as i32;
-            let ib = (255.99 * c.b) as i32;
-
-            println!("{} {} {}", ir, ig, ib);
-        }
-    }
+    let scene = build_scene();
+    scene.render();
 }
 
 fn build_scene() -> Scene {
-    let mut scene = Scene::new();
+    let mut scene = Scene::new(
+        1000, 
+        500,
+        100,
+        Box::new(PinholeCamera::new()));
     scene.add(Box::new(Sphere::new(
         Point::new(0.0, 0.0, -1.0),
         0.5,
@@ -77,30 +47,4 @@ fn build_scene() -> Scene {
     )));
 
     scene
-}
-
-fn color(r: Ray, scene: &mut Scene, depth: i32, rng: &mut ThreadRng) -> Color {
-    match scene.hit(&r, 0.001, std::f64::MAX) {
-        Some(hr) => {
-            if depth < 50 {
-                match hr.material.scatter(&r, &hr) {
-                    Some(sr) => color(sr.scattered, scene, depth + 1, rng)
-                              * sr.attenuation,
-                    None => Color::new(0.0, 0.0, 0.0),
-                }
-            } else {
-                Color::new(0.0, 0.0, 0.0)
-            }
-        }
-        None => {
-            let unit_direction = r.d.hat();
-            let t = 0.5 * (unit_direction.y as f32 + 1.0);
-
-            Color::blend(
-                t,
-                Color::new(1.0, 1.0, 1.0),
-                Color::new(0.5, 0.7, 1.0),
-            )
-        }
-    }
 }

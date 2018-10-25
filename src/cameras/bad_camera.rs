@@ -6,6 +6,8 @@ use rand::prelude::*;
 
 use crate::math::{ Point, Ray, Vector };
 
+use super::Camera;
+
 pub struct BadCamera {
     origin: Point,
     lower_left_corner: Point,
@@ -48,8 +50,10 @@ impl BadCamera {
             lens_radius: aperture / 2.0,
         }
     }
+}
 
-    pub fn get_ray(&self, s: f64, t: f64) -> Ray {
+impl Camera for BadCamera {
+    fn get_ray(&self, s: f64, t: f64) -> Ray {
         let rd = random_in_unit_disk() * self.lens_radius;
         let offset = self.u * rd.x + self.v * rd.y;
 
