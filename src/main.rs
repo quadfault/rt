@@ -10,7 +10,7 @@ mod scene;
 
 use rand::prelude::*;
 
-use self::cameras::BadCamera;
+use self::cameras::PinholeCamera;
 use self::math::{ Color, Point, Ray, Vector };
 use self::materials::*;
 use self::models::*;
@@ -29,7 +29,7 @@ fn main() {
     scene.add(Box::new(Sphere::new(
         Point::new(0.0, 0.0, -1.0),
         0.5,
-        Box::new(Lambertian::new(Vector::new(0.1, 0.2, 0.5)))
+        Box::new(Lambertian::new(Vector::new(0.8, 0.3, 0.3)))
     )));
     scene.add(Box::new(Sphere::new(
         Point::new(0.0, -100.5, -1.0),
@@ -44,25 +44,10 @@ fn main() {
     scene.add(Box::new(Sphere::new(
         Point::new(-1.0, 0.0, -1.0),
         0.5,
-        Box::new(Dielectric::new(1.5))
-    )));
-    scene.add(Box::new(Sphere::new(
-        Point::new(-1.0, 0.0, -1.0),
-        -0.45,
-        Box::new(Dielectric::new(1.5)),
+        Box::new(Metal::new(Vector::new(0.8, 0.8, 0.8), 1.0))
     )));
 
-    let lookfrom = Point::new(3.0, 3.0, 2.0);
-    let lookat = Point::new(0.0, 0.0, -1.0);
-    let camera = BadCamera::new(
-        lookfrom,
-        lookat,
-        Vector::new(0.0, 1.0, 0.0),
-        20.0,
-        nx as f64 / ny as f64,
-        2.0,
-        (lookfrom - lookat).norm(),
-    );
+    let camera = PinholeCamera::new();
 
     let mut rng = thread_rng();
 
