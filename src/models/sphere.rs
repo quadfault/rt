@@ -1,20 +1,11 @@
-// models.rs - Things that go in scenes and can be rendered.
+// models/sphere.rs - Spheres.
 // Written by quadfault
-// 10/19/18
+// 10/24/18
 
 use crate::materials::Material;
-use crate::math::{ Point, Ray, Vector };
+use crate::math::{ Point, Ray };
 
-pub struct HitResult<'a> {
-    pub t: f64,
-    pub p: Point,
-    pub n: Vector,
-    pub material: &'a dyn Material,
-}
-
-pub trait Model {
-    fn hit(&self, r: &Ray, tmin: f64, tmax: f64) -> Option<HitResult>;
-}
+use super::{ HitResult, Model };
 
 pub struct Sphere {
     c: Point,
