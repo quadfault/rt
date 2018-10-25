@@ -2,7 +2,7 @@
 // Written by quadfault
 // 10/18/18
 
-mod camera;
+mod cameras;
 mod materials;
 mod math;
 mod models;
@@ -10,7 +10,7 @@ mod scene;
 
 use rand::prelude::*;
 
-use self::camera::Camera;
+use self::cameras::BadCamera;
 use self::math::{ Color, Point, Ray, Vector };
 use self::materials::*;
 use self::models::*;
@@ -54,7 +54,7 @@ fn main() {
 
     let lookfrom = Point::new(3.0, 3.0, 2.0);
     let lookat = Point::new(0.0, 0.0, -1.0);
-    let camera = Camera::new(
+    let camera = BadCamera::new(
         lookfrom,
         lookat,
         Vector::new(0.0, 1.0, 0.0),

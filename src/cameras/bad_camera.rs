@@ -1,12 +1,12 @@
-// camera.rs - Cameras.
+// cameras/bad_camera.rs - A bad camera that I need to fix.
 // Written by quadfault
-// 10/19/18
+// 10/24/18
 
 use rand::prelude::*;
 
 use crate::math::{ Point, Ray, Vector };
 
-pub struct Camera {
+pub struct BadCamera {
     origin: Point,
     lower_left_corner: Point,
     horizontal: Vector,
@@ -17,7 +17,7 @@ pub struct Camera {
     lens_radius: f64,
 }
 
-impl Camera {
+impl BadCamera {
     pub fn new(lookfrom: Point,
                lookat: Point,
                vup: Vector,
