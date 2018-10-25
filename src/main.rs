@@ -25,28 +25,7 @@ fn main() {
     println!("{} {}", nx, ny);
     println!("255");
 
-    let mut scene = Scene::new();
-    scene.add(Box::new(Sphere::new(
-        Point::new(0.0, 0.0, -1.0),
-        0.5,
-        Box::new(Lambertian::new(Vector::new(0.8, 0.3, 0.3)))
-    )));
-    scene.add(Box::new(Sphere::new(
-        Point::new(0.0, -100.5, -1.0),
-        100.0,
-        Box::new(Lambertian::new(Vector::new(0.8, 0.8, 0.0)))
-    )));
-    scene.add(Box::new(Sphere::new(
-        Point::new(1.0, 0.0, -1.0),
-        0.5,
-        Box::new(Metal::new(Vector::new(0.8, 0.6, 0.2), 0.3))
-    )));
-    scene.add(Box::new(Sphere::new(
-        Point::new(-1.0, 0.0, -1.0),
-        0.5,
-        Box::new(Metal::new(Vector::new(0.8, 0.8, 0.8), 1.0))
-    )));
-
+    let mut scene = build_scene();
     let camera = PinholeCamera::new();
 
     let mut rng = thread_rng();
@@ -72,6 +51,32 @@ fn main() {
             println!("{} {} {}", ir, ig, ib);
         }
     }
+}
+
+fn build_scene() -> Scene {
+    let mut scene = Scene::new();
+    scene.add(Box::new(Sphere::new(
+        Point::new(0.0, 0.0, -1.0),
+        0.5,
+        Box::new(Lambertian::new(Vector::new(0.8, 0.3, 0.3)))
+    )));
+    scene.add(Box::new(Sphere::new(
+        Point::new(0.0, -100.5, -1.0),
+        100.0,
+        Box::new(Lambertian::new(Vector::new(0.8, 0.8, 0.0)))
+    )));
+    scene.add(Box::new(Sphere::new(
+        Point::new(1.0, 0.0, -1.0),
+        0.5,
+        Box::new(Metal::new(Vector::new(0.8, 0.6, 0.2), 0.3))
+    )));
+    scene.add(Box::new(Sphere::new(
+        Point::new(-1.0, 0.0, -1.0),
+        0.5,
+        Box::new(Metal::new(Vector::new(0.8, 0.8, 0.8), 1.0))
+    )));
+
+    scene
 }
 
 fn color(r: Ray, scene: &mut Scene, depth: i32, rng: &mut ThreadRng) -> Color {
