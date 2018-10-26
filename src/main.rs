@@ -24,7 +24,7 @@ fn build_scene() -> Scene {
         1000, 
         500,
         100,
-        Box::new(OrthographicCamera::new(1000, 500, 4.0, 2.0)),
+        Box::new(OrthographicCamera::new(1000, 500, 4.0)),
     );
     scene.add(Box::new(Sphere::new(
         Point::new(0.0, 0.0, -1.0),
