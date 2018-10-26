@@ -13,5 +13,7 @@ pub use self::orthographic_camera::*;
 use crate::math::Ray;
 
 pub trait Camera {
-    fn get_ray(&self, x: usize, y: usize) -> Ray;
+    type RayIter: Iterator<Item=Ray>;
+
+    fn rays(&self) -> Self::RayIter;
 }

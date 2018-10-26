@@ -8,7 +8,7 @@ mod math;
 mod models;
 mod scene;
 
-use self::cameras::OrthographicCamera;
+use self::cameras::{ OrthographicCamera, RayIter };
 use self::math::{ Point, Vector };
 use self::materials::*;
 use self::models::*;
@@ -19,7 +19,7 @@ fn main() {
     scene.render();
 }
 
-fn build_scene() -> Scene {
+fn build_scene() -> Scene<RayIter> {
     let mut scene = Scene::new(
         1000, 
         500,

@@ -8,19 +8,19 @@ use crate::cameras::Camera;
 use crate::math::{ Color, Ray };
 use crate::models::{ HitResult, Model };
 
-pub struct Scene {
+pub struct Scene<R> {
     image_width: usize,
     image_height: usize,
     samples_per_pixel: usize,
-    camera: Box<dyn Camera>,
+    camera: Box<dyn Camera<RayIter=R>>,
     models: Vec<Box<dyn Model>>,
 }
 
-impl Scene {
+impl<R: Iterator<Item=Ray>> Scene<R> {
     pub fn new(image_width: usize,
                image_height: usize,
                samples_per_pixel: usize,
-               camera: Box<dyn Camera>)
+               camera: Box<dyn Camera<RayIter=R>>)
         -> Self
     {
         Self {
@@ -43,18 +43,15 @@ impl Scene {
 
         let mut rng = thread_rng();
 
-        for y in (0..self.image_height).rev() {
-            for x in 0..self.image_width {
-                let r = self.camera.get_ray(x, y);
-                let c = self.color(r, 0, &mut rng);
-                let c = Color::new(c.r.sqrt(), c.g.sqrt(), c.b.sqrt());
+        for ray in self.camera.rays() {
+            let c = self.color(ray, 0, &mut rng);
+            let c = Color::new(c.r.sqrt(), c.g.sqrt(), c.b.sqrt());
 
-                let ir = (255.99 * c.r) as i32;
-                let ig = (255.99 * c.g) as i32;
-                let ib = (255.99 * c.b) as i32;
+            let ir = (255.99 * c.r) as i32;
+            let ig = (255.99 * c.g) as i32;
+            let ib = (255.99 * c.b) as i32;
 
-                println!("{} {} {}", ir, ig, ib);
-            }
+            println!("{} {} {}", ir, ig, ib);
         }
 /*
         let mut rng = thread_rng();
