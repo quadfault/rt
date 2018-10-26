@@ -43,6 +43,22 @@ impl Scene {
 
         let mut rng = thread_rng();
 
+        for y in (0..self.image_height).rev() {
+            for x in 0..self.image_width {
+                let r = self.camera.get_ray(x, y);
+                let c = self.color(r, 0, &mut rng);
+                let c = Color::new(c.r.sqrt(), c.g.sqrt(), c.b.sqrt());
+
+                let ir = (255.99 * c.r) as i32;
+                let ig = (255.99 * c.g) as i32;
+                let ib = (255.99 * c.b) as i32;
+
+                println!("{} {} {}", ir, ig, ib);
+            }
+        }
+/*
+        let mut rng = thread_rng();
+
         for j in (0..self.image_height).rev() {
             for i in 0..self.image_width {
                 let mut c = Color::new(0.0, 0.0, 0.0);
@@ -66,6 +82,7 @@ impl Scene {
                 println!("{} {} {}", ir, ig, ib);
             }
         }
+*/
     }
 
     pub fn color(&self, r: Ray, depth: i32, rng: &mut ThreadRng) -> Color {
