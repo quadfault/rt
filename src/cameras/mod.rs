@@ -13,7 +13,5 @@ pub use self::orthographic_camera::*;
 use crate::math::Ray;
 
 pub trait Camera {
-    type RayIter: Iterator<Item=Ray>;
-
-    fn rays(&self) -> Self::RayIter;
+    fn rays(&self) -> Box<dyn Iterator<Item=Ray>>;
 }

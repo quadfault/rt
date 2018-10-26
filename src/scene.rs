@@ -8,19 +8,19 @@ use crate::cameras::Camera;
 use crate::math::{ Color, Ray };
 use crate::models::{ HitResult, Model };
 
-pub struct Scene<R> {
+pub struct Scene {
     image_width: usize,
     image_height: usize,
     samples_per_pixel: usize,
-    camera: Box<dyn Camera<RayIter=R>>,
+    camera: Box<dyn Camera>,
     models: Vec<Box<dyn Model>>,
 }
 
-impl<R: Iterator<Item=Ray>> Scene<R> {
+impl Scene {
     pub fn new(image_width: usize,
                image_height: usize,
                samples_per_pixel: usize,
-               camera: Box<dyn Camera<RayIter=R>>)
+               camera: Box<dyn Camera>)
         -> Self
     {
         Self {

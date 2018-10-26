@@ -42,10 +42,8 @@ impl OrthographicCamera {
 }
 
 impl Camera for OrthographicCamera {
-    type RayIter = RayIter;
-
-    fn rays(&self) -> Self::RayIter {
-        Self::RayIter {
+    fn rays(&self) -> Box<dyn Iterator<Item=Ray>> {
+        Box::new(Rays {
             x: -1.0,
             y: self.vertical_pixel_count,
             horizontal_pixel_count: self.horizontal_pixel_count,
@@ -54,11 +52,11 @@ impl Camera for OrthographicCamera {
             horizontal_sample_offset: self.horizontal_sample_offset,
             vertical_sample_offset: self.vertical_sample_offset,
             d: self.d,
-        }
+        })
     }
 }
 
-pub struct RayIter {
+struct Rays {
     x: f64,
     y: f64,
     horizontal_pixel_count: f64,
@@ -69,7 +67,7 @@ pub struct RayIter {
     d: Vector,
 }
 
-impl Iterator for RayIter {
+impl Iterator for Rays {
     type Item = Ray;
 
     fn next(&mut self) -> Option<Self::Item> {
