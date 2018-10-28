@@ -23,14 +23,14 @@ impl Metal {
 }
 
 impl Material for Metal {
-    fn scatter(&self, r: &Ray, hr: &HitResult) -> Option<ScatterResult> {
-        let reflected = reflect(r.d.hat(), hr.n);
+    fn scatter(&self, ray: &Ray, hr: &HitResult) -> Option<ScatterResult> {
+        let reflected = reflect(ray.direction.hat(), hr.normal);
         let scattered = Ray::new(
-            hr.p,
+            hr.hit_point,
             reflected + random_in_unit_sphere() * self.fuzz,
         );
         
-        if scattered.d.dot(hr.n) > 0.0 {
+        if scattered.direction.dot(hr.normal) > 0.0 {
             Some(ScatterResult {
                 scattered,
                 attenuation: self.albedo,

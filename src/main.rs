@@ -41,7 +41,7 @@ fn build_scene() -> Scene {
     scene.add(Box::new(Sphere::new(
         Point::new(-1.0, 0.0, -1.0),
         0.5,
-        Box::new(Metal::new(Vector::new(0.8, 0.8, 0.8), 1.0))
+        Box::new(Metal::new(Vector::new(0.8, 0.8, 0.8), 0.0))
     )));
 
     scene

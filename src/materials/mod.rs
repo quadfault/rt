@@ -21,7 +21,7 @@ pub struct ScatterResult {
 }
 
 pub trait Material {
-    fn scatter(&self, r: &Ray, hr: &HitResult) -> Option<ScatterResult>;
+    fn scatter(&self, ray: &Ray, hr: &HitResult) -> Option<ScatterResult>;
 }
 
 fn random_in_unit_sphere() -> Vector {

@@ -8,46 +8,50 @@ use crate::math::{ Point, Ray };
 use super::{ HitResult, Model };
 
 pub struct Sphere {
-    c: Point,
-    r: f64,
+    center: Point,
+    radius: f64,
     material: Box<dyn Material>,
 }
 
 impl Sphere {
-    pub fn new(c: Point, r: f64, material: Box<dyn Material>) -> Self {
-        Self { c, r, material }
+    pub fn new(center: Point,
+               radius: f64,
+               material: Box<dyn Material>)
+        -> Self
+    {
+        Self { center, radius, material }
     }
 }
 
 impl Model for Sphere {
-    fn hit(&self, r: &Ray, tmin: f64, tmax: f64) -> Option<HitResult> {
-        let oc = r.o - self.c;
-        let a = r.d.dot(r.d);
-        let b = oc.dot(r.d);
-        let c = oc.dot(oc) - self.r * self.r;
+    fn hit(&self, ray: &Ray, tmin: f64, tmax: f64) -> Option<HitResult> {
+        let oc = ray.origin - self.center;
+        let a = ray.direction.dot(ray.direction);
+        let b = oc.dot(ray.direction);
+        let c = oc.dot(oc) - self.radius * self.radius;
         let discriminant = b * b - a * c;
 
         if discriminant > 0.0 {
             let t = (-b - discriminant.sqrt()) / a;
             if tmin < t && t < tmax {
-                let p = r.at(t);
+                let hit_point = ray.at(t);
 
                 return Some(HitResult {
                     t,
-                    p,
-                    n: (p - self.c) / self.r,
+                    hit_point,
+                    normal: (hit_point - self.center) / self.radius,
                     material: self.material.as_ref(),
                 })
             }
 
             let t = (-b + discriminant.sqrt()) / a;
             if tmin < t && t < tmax {
-                let p = r.at(t);
+                let hit_point = ray.at(t);
 
                 return Some(HitResult {
                     t,
-                    p,
-                    n: (p - self.c) / self.r,
+                    hit_point,
+                    normal: (hit_point - self.center) / self.radius,
                     material: self.material.as_ref(),
                 })
             }
@@ -67,7 +71,7 @@ mod sphere_tests {
         let r = 6.0;
         let s = Sphere::new(c, r);
 
-        assert_eq!(s.c, c);
-        assert_eq!(s.r, r);
+        assert_eq!(s.center, c);
+        assert_eq!(s.radius, r);
     }
 }

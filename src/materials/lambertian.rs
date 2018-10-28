@@ -18,12 +18,11 @@ impl Lambertian {
 }
 
 impl Material for Lambertian {
-    fn scatter(&self, _r: &Ray, hr: &HitResult) -> Option<ScatterResult>
-    {
-        let target = hr.p + hr.n + random_in_unit_sphere();
+    fn scatter(&self, _ray: &Ray, hr: &HitResult) -> Option<ScatterResult> {
+        let target = hr.hit_point + hr.normal + random_in_unit_sphere();
 
         Some(ScatterResult {
-            scattered: Ray::new(hr.p, target - hr.p),
+            scattered: Ray::new(hr.hit_point, target - hr.hit_point),
             attenuation: self.albedo,
         })
     }

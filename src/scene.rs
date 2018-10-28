@@ -84,11 +84,11 @@ impl Scene {
 */
     }
 
-    pub fn color(&self, r: Ray, depth: i32, rng: &mut ThreadRng) -> Color {
-        match self.hit(&r, 0.001, std::f64::MAX) {
+    pub fn color(&self, ray: Ray, depth: i32, rng: &mut ThreadRng) -> Color {
+        match self.hit(&ray, 0.001, std::f64::MAX) {
             Some(hr) => {
                 if depth < 50 {
-                    match hr.material.scatter(&r, &hr) {
+                    match hr.material.scatter(&ray, &hr) {
                         Some(sr) => self.color(sr.scattered, depth + 1, rng)
                                   * sr.attenuation,
                         None => Color::new(0.0, 0.0, 0.0),
@@ -98,7 +98,7 @@ impl Scene {
                 }
             }
             None => {
-                let unit_direction = r.d.hat();
+                let unit_direction = ray.direction.hat();
                 let t = 0.5 * (unit_direction.y as f32 + 1.0);
 
                 Color::blend(
@@ -110,12 +110,12 @@ impl Scene {
         }
     }
 
-    fn hit(&self, r: &Ray, tmin: f64, tmax: f64) -> Option<HitResult> {
+    fn hit(&self, ray: &Ray, tmin: f64, tmax: f64) -> Option<HitResult> {
         let mut closest_so_far = tmax;
         let mut rc = None;
 
         for model in &self.models {
-            match model.hit(r, tmin, closest_so_far) {
+            match model.hit(ray, tmin, closest_so_far) {
                 Some(hr) => {
                     closest_so_far = hr.t;
                     rc = Some(hr);

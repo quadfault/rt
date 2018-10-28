@@ -5,17 +5,17 @@
 use super::{ Point, Vector };
 
 pub struct Ray {
-    pub o: Point,
-    pub d: Vector,
+    pub origin: Point,
+    pub direction: Vector,
 }
 
 impl Ray {
-    pub fn new(o: Point, d: Vector) -> Self {
-        Self { o, d }
+    pub fn new(origin: Point, direction: Vector) -> Self {
+        Self { origin, direction }
     }
 
     pub fn at(&self, t: f64) -> Point {
-        self.o + self.d * t
+        self.origin + self.direction * t
     }
 }
 
@@ -29,7 +29,7 @@ mod tests {
         let d = Vector::new(1.0, 0.0, 0.0);
         let r = Ray::new(o, d);
 
-        assert_eq!(r.o, o);
-        assert_eq!(r.d, d);
+        assert_eq!(r.origin, o);
+        assert_eq!(r.direction, d);
     }
 }

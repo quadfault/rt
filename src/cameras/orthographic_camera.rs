@@ -16,7 +16,7 @@ pub struct OrthographicCamera {
     pixel_height: f64,
     view_plane_half_width: f64,
     view_plane_half_height: f64,
-    d: Vector,
+    direction: Vector,
 }
 
 impl OrthographicCamera {
@@ -39,7 +39,7 @@ impl OrthographicCamera {
             pixel_height,
             view_plane_half_width: view_plane_width / 2.0,
             view_plane_half_height: view_plane_height / 2.0,
-            d: Vector::new(0.0, 0.0, -1.0),
+            direction: Vector::new(0.0, 0.0, -1.0),
         }
     }
 }
@@ -92,7 +92,7 @@ impl<'a> Iterator for Rays<'a> {
             let vertical_sample_offset =
                 self.rng.gen::<f64>() * self.camera.pixel_height;
 
-            let o = Point::new(
+            let origin = Point::new(
                 self.x * self.camera.pixel_width
                     - self.camera.view_plane_half_width
                     + horizontal_sample_offset,
@@ -102,7 +102,10 @@ impl<'a> Iterator for Rays<'a> {
                 0.0,
             );
 
-            Some(Ray { o, d: self.camera.d })
+            Some(Ray {
+                origin,
+                direction: self.camera.direction
+            })
         }
     }
 }

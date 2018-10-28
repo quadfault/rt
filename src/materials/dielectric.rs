@@ -20,25 +20,27 @@ impl Dielectric {
 }
 
 impl Material for Dielectric {
-    fn scatter(&self, r: &Ray, hr: &HitResult) -> Option<ScatterResult> {
-        let reflected = reflect(r.d, hr.n);
+    fn scatter(&self, ray: &Ray, hr: &HitResult) -> Option<ScatterResult> {
+        let reflected = reflect(ray.direction, hr.normal);
         let outward_normal;
         let ni_over_nt;
         let cosine;
 
-        if r.d.dot(hr.n) > 0.0 {
-            outward_normal = -hr.n;
+        if ray.direction.dot(hr.normal) > 0.0 {
+            outward_normal = -hr.normal;
             ni_over_nt = self.refractive_index;
-            cosine = self.refractive_index * r.d.dot(hr.n) / r.d.norm();
+            cosine = self.refractive_index
+                * ray.direction.dot(hr.normal)
+                / ray.direction.norm();
         } else {
-            outward_normal = hr.n;
+            outward_normal = hr.normal;
             ni_over_nt = 1.0 / self.refractive_index;
-            cosine = -r.d.dot(hr.n) / r.d.norm();
+            cosine = -ray.direction.dot(hr.normal) / ray.direction.norm();
         }
 
         let reflect_prob;
         let mut refracted = Vector::zero();
-        match refract(r.d, outward_normal, ni_over_nt) {
+        match refract(ray.direction, outward_normal, ni_over_nt) {
             Some(r) => {
                 refracted = r;
                 reflect_prob = schlick(cosine, self.refractive_index);
@@ -50,12 +52,12 @@ impl Material for Dielectric {
 
         if thread_rng().gen::<f64>() < reflect_prob {
             Some(ScatterResult {
-                scattered: Ray::new(hr.p, reflected),
+                scattered: Ray::new(hr.hit_point, reflected),
                 attenuation: Vector::new(1.0, 1.0, 1.0),
             })
         } else {
             Some(ScatterResult {
-                scattered: Ray::new(hr.p, refracted),
+                scattered: Ray::new(hr.hit_point, refracted),
                 attenuation: Vector::new(1.0, 1.0, 1.0),
             })
         }
