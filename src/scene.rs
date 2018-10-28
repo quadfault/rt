@@ -11,7 +11,7 @@ use crate::models::{ HitResult, Model };
 pub struct Scene {
     image_width: usize,
     image_height: usize,
-    samples_per_pixel: usize,
+    samples_per_pixel: f32,
     camera: Box<dyn Camera>,
     models: Vec<Box<dyn Model>>,
 }
@@ -26,7 +26,7 @@ impl Scene {
         Self {
             image_width,
             image_height,
-            samples_per_pixel,
+            samples_per_pixel: samples_per_pixel as f32,
             camera,
             models: vec![],
         }
@@ -43,15 +43,24 @@ impl Scene {
 
         let mut rng = thread_rng();
 
-        for ray in self.camera.rays() {
-            let c = self.color(ray, 0, &mut rng);
-            let c = Color::new(c.r.sqrt(), c.g.sqrt(), c.b.sqrt());
+        for y in (0..self.image_height).rev() {
+            for x in 0..self.image_width {
+                let mut pixel_color = Color::new(0.0, 0.0, 0.0);
+                for ray in self.camera.rays(x, y) {
+                    pixel_color += self.color(ray, 0, &mut rng);
+                }
+                pixel_color /= self.samples_per_pixel;
 
-            let ir = (255.99 * c.r) as i32;
-            let ig = (255.99 * c.g) as i32;
-            let ib = (255.99 * c.b) as i32;
+                pixel_color.r = pixel_color.r.sqrt();
+                pixel_color.g = pixel_color.g.sqrt();
+                pixel_color.b = pixel_color.b.sqrt();
 
-            println!("{} {} {}", ir, ig, ib);
+                let ir = (255.99 * pixel_color.r) as i32;
+                let ig = (255.99 * pixel_color.g) as i32;
+                let ib = (255.99 * pixel_color.b) as i32;
+
+                println!("{} {} {}", ir, ig, ib);
+            }
         }
 /*
         let mut rng = thread_rng();

@@ -14,12 +14,14 @@ pub struct OrthographicCamera {
     horizontal_sample_offset: f64,
     vertical_sample_offset: f64,
     d: Vector,
+    samples_per_pixel: usize,
 }
 
 impl OrthographicCamera {
     pub fn new(horizontal_pixel_count: usize,
                vertical_pixel_count: usize,
-               view_plane_width: f64)
+               view_plane_width: f64,
+               samples_per_pixel: usize)
         -> Self
     {
         let horizontal_pixel_count = horizontal_pixel_count as f64;
@@ -37,15 +39,19 @@ impl OrthographicCamera {
             horizontal_sample_offset: (pixel_width - view_plane_width) / 2.0,
             vertical_sample_offset: (pixel_height - view_plane_height) / 2.0,
             d: Vector::new(0.0, 0.0, -1.0),
+            samples_per_pixel,
         }
     }
 }
 
 impl Camera for OrthographicCamera {
-    fn rays<'a>(&'a self) -> Box<dyn Iterator<Item=Ray> + 'a> {
+    fn rays<'a>(&'a self, x: usize, y: usize) 
+        -> Box<dyn Iterator<Item=Ray> + 'a>
+    {
         Box::new(Rays {
-            x: -1.0,
-            y: self.vertical_pixel_count,
+            x: x as f64,
+            y: y as f64,
+            rays_left: self.samples_per_pixel,
             camera: self,
         })
     }
@@ -54,6 +60,7 @@ impl Camera for OrthographicCamera {
 struct Rays<'a> {
     x: f64,
     y: f64,
+    rays_left: usize,
     camera: &'a OrthographicCamera,
 }
 
@@ -61,24 +68,20 @@ impl<'a> Iterator for Rays<'a> {
     type Item = Ray;
 
     fn next(&mut self) -> Option<Self::Item> {
-        self.x += 1.0;
-        if self.x >= self.camera.horizontal_pixel_count {
-            self.y -= 1.0;
-            if self.y < 0.0 {
-                return None;
-            }
+        if self.rays_left == 0 {
+            None
+        } else {
+            self.rays_left -= 1;
 
-            self.x = 0.0;
+            let o = Point::new(
+                self.x * self.camera.pixel_width
+                    + self.camera.horizontal_sample_offset,
+                self.y * self.camera.pixel_height
+                    + self.camera.vertical_sample_offset,
+                0.0,
+            );
+
+            Some(Ray { o, d: self.camera.d })
         }
-
-        let o = Point::new(
-            self.x * self.camera.pixel_width
-                + self.camera.horizontal_sample_offset,
-            self.y * self.camera.pixel_height
-                + self.camera.vertical_sample_offset,
-            0.0,
-        );
-
-        Some(Ray { o, d: self.camera.d })
     }
 }

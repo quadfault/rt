@@ -20,11 +20,13 @@ fn main() {
 }
 
 fn build_scene() -> Scene {
+    let samples_per_pixel = 1;
+
     let mut scene = Scene::new(
         1000, 
         500,
-        100,
-        Box::new(OrthographicCamera::new(1000, 500, 4.0)),
+        samples_per_pixel,
+        Box::new(OrthographicCamera::new(1000, 500, 4.0, samples_per_pixel)),
     );
     scene.add(Box::new(Sphere::new(
         Point::new(0.0, 0.0, -1.0),
