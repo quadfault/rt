@@ -2,8 +2,10 @@
 // Written by quadfault
 // 10/19/18
 
+mod plane;
 mod sphere;
 
+pub use self::plane::*;
 pub use self::sphere::*;
 
 use crate::materials::Material;
