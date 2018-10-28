@@ -7,44 +7,54 @@ use crate::math::{ Point, Ray, Vector };
 use super::Camera;
 
 pub struct OrthographicCamera {
-    horizontal_pixel_count: f64,
-    vertical_pixel_count: f64,
+    image_width: usize,
+    image_height: usize,
+    samples_per_pixel: usize,
     pixel_width: f64,
     pixel_height: f64,
     horizontal_sample_offset: f64,
     vertical_sample_offset: f64,
     d: Vector,
-    samples_per_pixel: usize,
 }
 
 impl OrthographicCamera {
-    pub fn new(horizontal_pixel_count: usize,
-               vertical_pixel_count: usize,
+    pub fn new(image_width: usize,
+               image_height: usize,
                view_plane_width: f64,
                samples_per_pixel: usize)
         -> Self
     {
-        let horizontal_pixel_count = horizontal_pixel_count as f64;
-        let vertical_pixel_count = vertical_pixel_count as f64;
         let view_plane_height = view_plane_width
-            * (vertical_pixel_count / horizontal_pixel_count);
-        let pixel_width = view_plane_width / horizontal_pixel_count;
-        let pixel_height = view_plane_height / vertical_pixel_count;
+            * (image_height as f64 / image_width as f64);
+        let pixel_width = view_plane_width / image_width as f64;
+        let pixel_height = view_plane_height / image_height as f64;
 
         Self {
-            horizontal_pixel_count,
-            vertical_pixel_count,
+            image_width,
+            image_height,
+            samples_per_pixel,
             pixel_width,
             pixel_height,
             horizontal_sample_offset: (pixel_width - view_plane_width) / 2.0,
             vertical_sample_offset: (pixel_height - view_plane_height) / 2.0,
             d: Vector::new(0.0, 0.0, -1.0),
-            samples_per_pixel,
         }
     }
 }
 
 impl Camera for OrthographicCamera {
+    fn get_image_width(&self) -> usize {
+        self.image_width
+    }
+
+    fn get_image_height(&self) -> usize {
+        self.image_height
+    }
+
+    fn get_samples_per_pixel(&self) -> usize {
+        self.samples_per_pixel
+    }
+
     fn rays<'a>(&'a self, x: usize, y: usize) 
         -> Box<dyn Iterator<Item=Ray> + 'a>
     {

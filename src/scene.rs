@@ -9,24 +9,13 @@ use crate::math::{ Color, Ray };
 use crate::models::{ HitResult, Model };
 
 pub struct Scene {
-    image_width: usize,
-    image_height: usize,
-    samples_per_pixel: f32,
     camera: Box<dyn Camera>,
     models: Vec<Box<dyn Model>>,
 }
 
 impl Scene {
-    pub fn new(image_width: usize,
-               image_height: usize,
-               samples_per_pixel: usize,
-               camera: Box<dyn Camera>)
-        -> Self
-    {
+    pub fn new(camera: Box<dyn Camera>) -> Self {
         Self {
-            image_width,
-            image_height,
-            samples_per_pixel: samples_per_pixel as f32,
             camera,
             models: vec![],
         }
@@ -38,18 +27,22 @@ impl Scene {
 
     pub fn render(&self) {
         println!("P3");
-        println!("{} {}", self.image_width, self.image_height);
+        println!(
+            "{} {}",
+            self.camera.get_image_width(),
+            self.camera.get_image_height()
+        );
         println!("255");
 
         let mut rng = thread_rng();
 
-        for y in (0..self.image_height).rev() {
-            for x in 0..self.image_width {
+        for y in (0..self.camera.get_image_height()).rev() {
+            for x in 0..self.camera.get_image_width() {
                 let mut pixel_color = Color::new(0.0, 0.0, 0.0);
                 for ray in self.camera.rays(x, y) {
                     pixel_color += self.color(ray, 0, &mut rng);
                 }
-                pixel_color /= self.samples_per_pixel;
+                pixel_color /= self.camera.get_samples_per_pixel() as f32;
 
                 pixel_color.r = pixel_color.r.sqrt();
                 pixel_color.g = pixel_color.g.sqrt();
