@@ -2,6 +2,8 @@
 // Written by quadfault
 // 10/26/18
 
+use rand::prelude::*;
+
 use crate::math::{ Point, Ray, Vector };
 
 use super::Camera;
@@ -12,8 +14,8 @@ pub struct OrthographicCamera {
     samples_per_pixel: usize,
     pixel_width: f64,
     pixel_height: f64,
-    horizontal_sample_offset: f64,
-    vertical_sample_offset: f64,
+    view_plane_half_width: f64,
+    view_plane_half_height: f64,
     d: Vector,
 }
 
@@ -35,8 +37,8 @@ impl OrthographicCamera {
             samples_per_pixel,
             pixel_width,
             pixel_height,
-            horizontal_sample_offset: (pixel_width - view_plane_width) / 2.0,
-            vertical_sample_offset: (pixel_height - view_plane_height) / 2.0,
+            view_plane_half_width: view_plane_width / 2.0,
+            view_plane_half_height: view_plane_height / 2.0,
             d: Vector::new(0.0, 0.0, -1.0),
         }
     }
@@ -62,6 +64,7 @@ impl Camera for OrthographicCamera {
             x: x as f64,
             y: y as f64,
             rays_left: self.samples_per_pixel,
+            rng: thread_rng(),
             camera: self,
         })
     }
@@ -71,6 +74,7 @@ struct Rays<'a> {
     x: f64,
     y: f64,
     rays_left: usize,
+    rng: ThreadRng,
     camera: &'a OrthographicCamera,
 }
 
@@ -83,11 +87,18 @@ impl<'a> Iterator for Rays<'a> {
         } else {
             self.rays_left -= 1;
 
+            let horizontal_sample_offset =
+                self.rng.gen::<f64>() * self.camera.pixel_width;
+            let vertical_sample_offset =
+                self.rng.gen::<f64>() * self.camera.pixel_height;
+
             let o = Point::new(
                 self.x * self.camera.pixel_width
-                    + self.camera.horizontal_sample_offset,
+                    - self.camera.view_plane_half_width
+                    + horizontal_sample_offset,
                 self.y * self.camera.pixel_height
-                    + self.camera.vertical_sample_offset,
+                    - self.camera.view_plane_half_height
+                    + vertical_sample_offset,
                 0.0,
             );
 
