@@ -60,18 +60,3 @@ impl Model for Sphere {
         None
     }
 }
-
-#[cfg(test)]
-mod sphere_tests {
-    use super::*;
-
-    #[test]
-    fn new() {
-        let c = Point::new(3.0, 4.0, 5.0);
-        let r = 6.0;
-        let s = Sphere::new(c, r);
-
-        assert_eq!(s.center, c);
-        assert_eq!(s.radius, r);
-    }
-}

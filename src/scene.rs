@@ -38,7 +38,7 @@ impl Scene {
 
         for y in (0..self.camera.get_image_height()).rev() {
             for x in 0..self.camera.get_image_width() {
-                let mut pixel_color = Color::new(0.0, 0.0, 0.0);
+                let mut pixel_color = Color::black();
                 for ray in self.camera.rays(x, y) {
                     pixel_color += self.color(ray, 0, &mut rng);
                 }
@@ -60,7 +60,7 @@ impl Scene {
 
         for j in (0..self.image_height).rev() {
             for i in 0..self.image_width {
-                let mut c = Color::new(0.0, 0.0, 0.0);
+                let mut c = Color::black();
                 for _ in 0..self.samples_per_pixel {
                     let u = (i as f64 + rng.gen::<f64>()) 
                           / self.image_width as f64;
@@ -91,10 +91,10 @@ impl Scene {
                     match hr.material.scatter(&ray, &hr) {
                         Some(sr) => self.color(sr.scattered, depth + 1, rng)
                                   * sr.attenuation,
-                        None => Color::new(0.0, 0.0, 0.0),
+                        None => Color::black(),
                     }
                 } else {
-                    Color::new(0.0, 0.0, 0.0)
+                    Color::black()
                 }
             }
             None => {

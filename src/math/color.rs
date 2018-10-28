@@ -6,6 +6,7 @@ use std::ops::{ AddAssign, DivAssign, Mul };
 
 use super::Vector;
 
+#[derive(Debug, PartialEq)]
 pub struct Color {
     pub r: f32,
     pub g: f32,
@@ -15,6 +16,10 @@ pub struct Color {
 impl Color {
     pub fn new(r: f32, g: f32, b: f32) -> Self {
         Self { r, g, b }
+    }
+
+    pub fn black() -> Self {
+        Self::new(0.0, 0.0, 0.0)
     }
 
     pub fn blend(t: f32, start: Self, end: Self) -> Self {
@@ -77,5 +82,12 @@ mod tests {
         assert_eq!(c.r, 0.5);
         assert_eq!(c.g, 0.25);
         assert_eq!(c.b, 0.0);
+    }
+
+    #[test]
+    fn black() {
+        let c = Color::black();
+
+        assert_eq!(c, Color::new(0.0, 0.0, 0.0));
     }
 }
