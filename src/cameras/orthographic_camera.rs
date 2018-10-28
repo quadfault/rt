@@ -42,37 +42,27 @@ impl OrthographicCamera {
 }
 
 impl Camera for OrthographicCamera {
-    fn rays(&self) -> Box<dyn Iterator<Item=Ray>> {
+    fn rays<'a>(&'a self) -> Box<dyn Iterator<Item=Ray> + 'a> {
         Box::new(Rays {
             x: -1.0,
             y: self.vertical_pixel_count,
-            horizontal_pixel_count: self.horizontal_pixel_count,
-            pixel_width: self.pixel_width,
-            pixel_height: self.pixel_height,
-            horizontal_sample_offset: self.horizontal_sample_offset,
-            vertical_sample_offset: self.vertical_sample_offset,
-            d: self.d,
+            camera: self,
         })
     }
 }
 
-struct Rays {
+struct Rays<'a> {
     x: f64,
     y: f64,
-    horizontal_pixel_count: f64,
-    pixel_width: f64,
-    pixel_height: f64,
-    horizontal_sample_offset: f64,
-    vertical_sample_offset: f64,
-    d: Vector,
+    camera: &'a OrthographicCamera,
 }
 
-impl Iterator for Rays {
+impl<'a> Iterator for Rays<'a> {
     type Item = Ray;
 
     fn next(&mut self) -> Option<Self::Item> {
         self.x += 1.0;
-        if self.x >= self.horizontal_pixel_count {
+        if self.x >= self.camera.horizontal_pixel_count {
             self.y -= 1.0;
             if self.y < 0.0 {
                 return None;
@@ -82,13 +72,13 @@ impl Iterator for Rays {
         }
 
         let o = Point::new(
-            self.x * self.pixel_width
-                + self.horizontal_sample_offset,
-            self.y * self.pixel_height
-                + self.vertical_sample_offset,
+            self.x * self.camera.pixel_width
+                + self.camera.horizontal_sample_offset,
+            self.y * self.camera.pixel_height
+                + self.camera.vertical_sample_offset,
             0.0,
         );
 
-        Some(Ray { o, d: self.d })
+        Some(Ray { o, d: self.camera.d })
     }
 }
