@@ -32,28 +32,18 @@ impl Model for Sphere {
         let discriminant = b * b - a * c;
 
         if discriminant > 0.0 {
-            let t = (-b - discriminant.sqrt()) / a;
-            if tmin < t && t < tmax {
-                let hit_point = ray.at(t);
+            let dsqrt = discriminant.sqrt();
+            for &t in &[(-b - dsqrt) / a, (-b + dsqrt) / a] {
+                if tmin < t && t < tmax {
+                    let hit_point = ray.at(t);
 
-                return Some(HitResult {
-                    t,
-                    hit_point,
-                    normal: (hit_point - self.center) / self.radius,
-                    material: self.material.as_ref(),
-                })
-            }
-
-            let t = (-b + discriminant.sqrt()) / a;
-            if tmin < t && t < tmax {
-                let hit_point = ray.at(t);
-
-                return Some(HitResult {
-                    t,
-                    hit_point,
-                    normal: (hit_point - self.center) / self.radius,
-                    material: self.material.as_ref(),
-                })
+                    return Some(HitResult {
+                        t,
+                        hit_point,
+                        normal: (hit_point - self.center) / self.radius,
+                        material: self.material.as_ref(),
+                    })
+                }
             }
         }
 
